@@ -1,0 +1,173 @@
+<mat-grid-list [cols]="12" rowHeight="4rem">
+
+  <mat-grid-tile [colspan]="5" rowspan="10">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Supplier Form</mat-card-title>
+      </mat-card-header>
+      <mat-card-content id="supplierForm">
+
+        <form [formGroup]="supplierForm">
+
+          <mat-form-field appearance="outline">
+            <mat-label>Select a Employee</mat-label>
+            <mat-select formControlName="regemployee">
+              <mat-option *ngFor="let employee of employees" [value]="employee">{{employee.callingname}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Enter a Name</mat-label>
+            <input matInput formControlName="name">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Enter a Register Number</mat-label>
+            <input matInput formControlName="registernumber">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Enter a Address</mat-label>
+            <input matInput formControlName="address">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Enter a Email</mat-label>
+            <input matInput formControlName="email">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Enter a Mobile</mat-label>
+            <input matInput formControlName="mobile">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Date of Registered</mat-label>
+            <input matInput [matDatepicker]="doreg" formControlName="doregister">
+            <mat-datepicker-toggle matSuffix [for]="doreg"></mat-datepicker-toggle>
+            <mat-datepicker #doreg></mat-datepicker>
+          </mat-form-field>
+
+          <div id="listtrnasfer">
+
+            <div class="list">
+              <mat-selection-list  #availableCategoryList>
+                <mat-list-option *ngFor="let category of categories" [value]="category" >{{category.name}}</mat-list-option>
+              </mat-selection-list>
+            </div>
+
+            <div id="pnlmiddle">
+              <button mat-raised-button (click)="rightSelected()">&gt;</button>
+              <button mat-raised-button (click)="leftSelected()">&lt;</button>
+              <button mat-raised-button (click)="rightAll()">&gt;&gt;</button>
+              <button mat-raised-button (click)="leftAll()">&lt;&lt;</button>
+            </div>
+
+            <div class="list">
+              <mat-selection-list  formControlName="supplies" #selectedCategoryList>
+                <mat-list-option  *ngFor="let supplies of selectedSupplies" [value]="supplies">{{supplies.category.name}}</mat-list-option>
+              </mat-selection-list>
+            </div>
+
+          </div>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Select a Supplier Status</mat-label>
+            <mat-select formControlName="supplierstatus">
+              <mat-option *ngFor="let status of supplierStatuses" [value]="status">{{status.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Select a Supplier Type</mat-label>
+            <mat-select formControlName="suppliertype">
+              <mat-option *ngFor="let types of supplierTypes" [value]="types">{{types.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Description</mat-label>
+            <input matInput formControlName="description">
+          </mat-form-field>
+
+          <div id="butpanel">
+            <button mat-raised-button (click)="add()" [disabled]="!(enaAdd && hasInsertAuthority)">Add</button>
+            <button mat-raised-button (click)="clear()">Clear</button>
+            <button mat-raised-button (click)="update()" [disabled]="!(enaUpd && hasUpdateAuthority)">Update</button>
+            <button mat-raised-button (click)="delete()" [disabled]="!(enaDel && hasDeleteAuthority)">Delete</button>
+          </div>
+
+        </form>
+
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="7" rowspan="4">
+    <mat-card id="ssearch">
+      <mat-card-header>
+        <mat-card-title>Supplier Search</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+
+        <form [formGroup]="supplierSsSearchForm">
+
+          <mat-form-field appearance="outline">
+            <mat-label>Enter a Name</mat-label>
+            <input matInput formControlName="ssname">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Enter a Reg Number</mat-label>
+            <input matInput formControlName="ssnumber">
+          </mat-form-field>
+
+          <button mat-raised-button (click)="search()">Search</button>
+          <button mat-raised-button (click)="searchClear()">Clear Search</button>
+
+        </form>
+
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="7" rowspan="6">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Supplier View</mat-card-title>
+        <div id="loading">
+          <img [src]="imageurl">
+        </div>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-table [dataSource]="data">
+
+          <ng-container *ngFor="let column of columns;let i = index;" [matColumnDef]="column">
+            <mat-header-cell *matHeaderCellDef> {{headers[i]}} </mat-header-cell>
+            <mat-cell *matCellDef="let element">{{ uiassist.getProperty(element, binders[i]) }} </mat-cell>
+          </ng-container>
+
+          <ng-container *ngFor="let cscolumn of cscoloumns;let i = index;" [matColumnDef]="cscolumn">
+            <mat-header-cell *matHeaderCellDef>
+              <form [formGroup]="supplierCsSearchForm" class="csearch">
+                <mat-form-field appearance="outline">
+                  <mat-label>{{cscolpromts[i]}}</mat-label>
+                  <input matInput [formControlName]="cscolumn"
+                         (keyup)="filterTable()">
+                </mat-form-field>
+              </form>
+            </mat-header-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+          <mat-header-row *matHeaderRowDef="cscoloumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: columns;" (click)="fillForm(row)" [ngClass]="{'selected-row': row === selectedRow}"></mat-row>
+
+        </mat-table>
+
+        <mat-paginator [length]="20" [pageSize]="3" [pageSizeOptions]="[3,5,10,20]" showFirstLastButtons></mat-paginator>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+</mat-grid-list>

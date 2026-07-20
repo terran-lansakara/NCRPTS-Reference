@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="assets">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/src/assets/earth.zip!/" />
+      <root url="jar://$PROJECT_DIR$/src/assets/harvest.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

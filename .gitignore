@@ -1,2 +1,6 @@
 node_modules/
 *.class
+
+# Gradle build output / caches — regenerable, never part of a reference snapshot
+.gradle/
+build/
